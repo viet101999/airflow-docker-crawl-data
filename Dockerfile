@@ -1,4 +1,4 @@
-FROM apache/airflow:2.0.1
+# FROM apache/airflow:2.0.1
 
 # COPY requirements.txt /requirements.txt
 # RUN pip install --user --upgrade pip
@@ -12,3 +12,7 @@ RUN apt-get update && \
     apt-get clean
 
 USER airflow
+
+RUN pip install --no-cache-dir selenium
+RUN pip install --no-cache-dir pandas
+RUN pip install --no-cache-dir PyPDF2

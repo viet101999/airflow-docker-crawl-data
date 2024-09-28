@@ -2,3 +2,5 @@ data
 Download
 logs
 selenium_downloads
+.vscode
+dags/__pycache__
