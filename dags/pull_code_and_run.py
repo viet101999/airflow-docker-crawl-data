@@ -28,36 +28,30 @@ with DAG(
     # Task 1: Clone code from GitHub repository
     git_clone_task = BashOperator(
         task_id='git_clone_code',
-        bash_command='rm -rf MiAI_Airflow && git clone https://github.com/thangnch/MiAI_Airflow.git MiAI_Airflow',
+        bash_command='rm -rf /opt/airflow/git_repo/vietdh_airflow && git clone https://github.com/viet101999/airflow-docker-crawl-data.git /opt/airflow/git_repo/vietdh_airflow',
     )
 
     # Task 2: Move the cloned code to the DAGs folder
     def move_to_dags():
-        src_path = "MiAI_Airflow/simple_dag_local.py"
+        src_path = "/opt/airflow/git_repo/vietdh_airflow/dags/crawl_data.py"
         dest_path = "/opt/airflow/dags"
 
-        # Check if source path exists
-        # if os.path.exists(src_path):
-        #     # Copy all files and directories from the source to the destination
-        #     for item in os.listdir(src_path):
-        #         s = os.path.join(src_path, item)
-        #         d = os.path.join(dest_path, item)
-        #         if os.path.isdir(s):
-        #             shutil.copytree(s, d, dirs_exist_ok=True)
-        #         else:
-        #             shutil.copy2(s, d)
+        # Ensure the DAGs folder exists
         if os.path.exists(src_path):
             shutil.copy2(src_path, dest_path)
+            print(f"Moved {src_path} to {dest_path}")
+        else:
+            print(f"Source path {src_path} does not exist")
 
     move_code_task = PythonOperator(
         task_id='move_code_to_dags',
         python_callable=move_to_dags,
     )
 
-    # Task 3: Trigger a DAG run (if required)
+    # Task 3: Trigger the newly moved DAG
     trigger_dag_run_task = BashOperator(
-        task_id='trigger_dag_run',
-        bash_command='airflow dags trigger thangnc_dag01a',
+        task_id='trigger_new_crawl_dag',
+        bash_command='airflow dags trigger crawl_data',
     )
 
     # Task pipeline
